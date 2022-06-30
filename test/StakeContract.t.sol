@@ -1,12 +1,12 @@
 // SPDX-License-Identifier: Unlicense
-pragma solidity 0.8.10;
+pragma solidity 0.8.15;
 
-import "ds-test/test.sol";
-import "../StakeContract.sol";
-import "./mocks/MockERC20.sol";
+import {stdStorage, StdStorage, Test} from "forge-std/Test.sol";
+import {Vm} from "forge-std/Vm.sol";
+import {StakeContract} from "../src/StakeContract.sol";
+import {MockERC20} from  "../src/MockERC20.sol";
 
-
-contract StakeContractTest is DSTest {
+contract StakeContractTest is Test {
     StakeContract public stakeContract;
     MockERC20 public mockToken; 
 
@@ -16,6 +16,7 @@ contract StakeContractTest is DSTest {
     }
 
     function test_staking_tokens_fuzz(uint256 amount) public {
+        vm.assume(amount <= mockToken.totalSupply());
         mockToken.approve(address(stakeContract), amount);
         bool stakePassed = stakeContract.stake(amount, address(mockToken));
         assertTrue(stakePassed);
