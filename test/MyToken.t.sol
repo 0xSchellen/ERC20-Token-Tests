@@ -9,16 +9,21 @@ import {MyToken} from  "../src/MyToken.sol";
 
 contract MyTokenTest is Test {
     MyToken private token; 
-    address private owner;
+    address private sender;
+    address private wallet;
+
     address private alice = address(0x1);
     address private bob = address(0x2);
 
     function setUp() public {
         // name, symbol, initialSupply
         token = new MyToken("Token", "TKN", 1_000_000e18);
-        owner =  address(msg.sender);
-        console.log("Owner ", address(msg.sender));
-        console.log("Token ", address(token));
+
+        wallet =  address(this);
+        sender =  address(msg.sender);
+        console.log("Token  ", address(token), token.balanceOf(address(token)));
+        console.log("Wallet ", address(wallet), token.balanceOf(address(wallet)));
+        console.log("Sender ", address(sender), token.balanceOf(address(sender)));
     }
 
     function test_invariant_metadata() public {
@@ -39,7 +44,7 @@ contract MyTokenTest is Test {
     }
 
     function test_transfer() public {
-        //vm.prank(owner);
+        vm.prank(wallet);
         token.transfer(address(alice), 1_000e18);
         token.transfer(address(bob), 1_000e18);
 
@@ -51,6 +56,7 @@ contract MyTokenTest is Test {
     }
 
     function test_fuzz_transfer(uint amountToAlice, uint amountToBob) public {
+        vm.prank(wallet);
         vm.assume(amountToAlice < token.totalSupply());
         vm.assume(amountToBob < (token.totalSupply() - amountToAlice));
 
