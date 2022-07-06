@@ -9,17 +9,16 @@ import {MyToken} from  "../src/MyToken.sol";
 
 contract MyTokenTest is Test {
     MyToken private token; 
+    address private owner;
     address private alice = address(0x1);
     address private bob = address(0x2);
 
     function setUp() public {
         // name, symbol, initialSupply
         token = new MyToken("Token", "TKN", 1_000_000e18);
-        //console.log("Sender", address(msg.sender));
-        //console.log("Token ", address(token));
-
-
-        token.transfer(address(alice), 1000e18);
+        owner =  address(msg.sender);
+        console.log("Owner ", address(msg.sender));
+        console.log("Token ", address(token));
     }
 
     function test_invariant_metadata() public {
@@ -28,10 +27,10 @@ contract MyTokenTest is Test {
         assertEq(token.decimals(), 18);
     }
 
-    function testFuzz_metadata(string memory name_, string memory symbol_) public {
-        MyToken mockToken = new MyToken(name_, symbol_, 1_000_000e18);
-        assertEq(mockToken.name(),     name_);
-        assertEq(mockToken.symbol(),   symbol_);
+    function test_fuzz_metadata(string memory name, string memory symbol) public {
+        MyToken mockToken = new MyToken(name, symbol, 1_000_000e18);
+        assertEq(mockToken.name(),     name);
+        assertEq(mockToken.symbol(),   symbol);
         assertEq(mockToken.decimals(), 18);
     }
 
@@ -40,35 +39,38 @@ contract MyTokenTest is Test {
     }
 
     function test_transfer() public {
+        //vm.prank(owner);
+        token.transfer(address(alice), 1_000e18);
+        token.transfer(address(bob), 1_000e18);
 
-        
-        assertEq(token.totalSupply(), 1_000_000e18);
+        vm.prank(alice);
+        token.transfer(address(bob),500e18);
+        token.balanceOf(alice);
+        assertEq(token.balanceOf(alice), 500e18);
+        assertEq(token.balanceOf(bob), 1_500e18);
     }
 
-    // function test_stakingtokens_fuzz(uint256 amount) public {
-    //     vm.assume(amount <= myToken.totalSupply());
-    //     myToken.approve(address(stakeContract), amount);
-    //     bool stakePassed = stakeContract.stake(amount, address(myToken));
-    //     assertTrue(stakePassed);
-    // }
+    function test_fuzz_transfer(uint amountToAlice, uint amountToBob) public {
+        vm.assume(amountToAlice < token.totalSupply());
+        vm.assume(amountToBob < (token.totalSupply() - amountToAlice));
 
-    // function testApproveScam() public {
-    //     vm.prank(alice);
-    //     ERC20Contract.approve(address(eve), type(uint256).max);
-    //     console.log(
-    //         "Before exploiting, Balance of Eve:", ERC20Contract.balanceOf(eve)
-    //     );
-    //     console.log(
-    //         "Due to Alice granted transfer permission to Eve, now Eve can move funds from Alice"
-    //     );
-    //     vm.prank(eve);
-    //     ERC20Contract.transferFrom(address(alice), address(eve), 1000);
-    //     console.log(
-    //         "After exploiting, Balance of Eve:", ERC20Contract.balanceOf(eve)
-    //     );
-    //     console.log("Exploit completed");
-    // }
-  
+        // Make Initial transfer from owner to alice and bob accounts
+        token.transfer(address(alice), amountToAlice);
+        token.transfer(address(bob), amountToBob);
+        assertEq(token.balanceOf(alice), (amountToAlice));
+        assertEq(token.balanceOf(bob), (amountToBob));
 
+        // Record balances
+        uint256 aliceBalance = token.balanceOf(alice);
+        uint256 bobBalance = token.balanceOf(bob);
 
+        // Alice make a token value transfer to Bob (10% of alice´s balance)
+        vm.prank(alice);
+        uint256 newTransferToBob = (aliceBalance / 10);
+        token.transfer(address(bob), newTransferToBob);
+
+        // Resulting balances are checked
+        assertEq(token.balanceOf(alice), (aliceBalance - newTransferToBob));
+        assertEq(token.balanceOf(bob), (bobBalance + newTransferToBob ));
+    }
 }
