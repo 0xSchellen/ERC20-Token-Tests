@@ -12,7 +12,7 @@ contract StakeContractTest is Test {
 
     function setUp() public {
         stakeContract = new StakeContract();
-        myToken = new MyToken("Token", "TKN", 1_000_000e18);
+        myToken = new MyToken("Token", "TKN");
     }
 
     function test_staking_tokens_fuzz(uint256 amount) public {
