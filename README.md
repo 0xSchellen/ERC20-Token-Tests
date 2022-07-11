@@ -15,5 +15,6 @@ openzeppelin - https://github.com/OpenZeppelin/openzeppelin-contracts
 
 0xPhaze      - https://github.com/0xPhaze/ERC721M
 
+and many more to be included...
 
 Suggestions and collaborations are very welcome!
