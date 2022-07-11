@@ -1,5 +1,21 @@
-# :moneybag: Contrato de loteria, aonde você compra um ticket e participa do sorteio, testes em fuzz com o Foundry.
+# ERC20_Token_Tests
 
+This is a suite of ERC20 Token tests using Foundry.
+
+It is an ongoing work, made in partnership with Guilherme Boaventura.
+https://github.com/guilhermeboaventurarodrigues
+
+Its based on the tests presentede in the excellent github repos below:
+
+https://github.com/Rari-Capital/solmate
+https://github.com/OpenZeppelin/openzeppelin-contracts
+
+https://github.com/0xPhaze/ERC721M
+
+
+Suggestions and collaborations are very welcome!
+
+0xPhaze - https://github.com/0xPhaze/ERC721M
 ## :briefcase: Regras de negócio:
 <p><b>O valor do ticket é 500 tokens, o sorteio acontece de forma manual, quando o sorteio é feito, o ganhador fica com o valor de todos os tickets comprados.</b></p>
 
@@ -30,17 +46,3 @@
 
 ## :bangbang: Testes negativos: 10
 <p>:slot_machine: Lottery</p>
-
-- testFailFuzzBuyTicketStatusCLOSED(uint256 amount)
-- testFailFuzzBuyTicketOtherValue(uint256 amount)
-- testFailFuzzGiftWinnerStatusCLOSED(uint256 amount)
-- testFailFuzzGiftWinnerNotOwner(uint256 amount)
-- testFailFuzzGetValueGiftStatusCLOSED(uint256 amount)
-
-<p>:dollar: Token</p>
-
-- testFailFuzzTransferNotBalance(address recipient, uint256 amount)
-- testFailFuzzApproveNotBalance(address spender, uint256 amount)
-- testFailFuzzTransferFromNotBalanace(address from, address to, uint256 amount)
-- testFailFuzzTransferFromNotApprove(address from, address to, uint256 amount)
-- testFailFuzzDecreaseAllowanceZeroBalance(address spender, uint256 amount)
