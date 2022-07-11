@@ -70,16 +70,12 @@ contract MockERC20Test is Test {
 
     function testFuzz_mint(address account, uint256 amount) public {
         vm.assume(account != address(0x0));
-        // Assume totalSupply() máx = 1_000_000e18
-        vm.assume(amount <= (1_000_000e18 - token.totalSupply()));
 
-        uint256 initialBalance = token.balanceOf(account);
-        uint256 initialTotalSupply = token.totalSupply();
+        MockERC20 mockToken = new MockERC20("Token", "TKN");
+        mockToken.mint(account, amount);
 
-        token.mint(account, amount);
-
-        assertEq(token.totalSupply(), (initialTotalSupply + amount));
-        assertEq(token.balanceOf(account), (initialBalance + amount));
+        assertEq(mockToken.totalSupply(), amount);
+        assertEq(mockToken.balanceOf(account), amount);
     }
 
     /* ------------- burn() ------------- */
@@ -90,18 +86,14 @@ contract MockERC20Test is Test {
 
     function testFuzz_burn(address account, uint256 amount) public {
         vm.assume(account != address(0x0));
-        // Assume totalSupply() máx = 1_000_000e18
-        vm.assume(amount <= (1_000_000e18 - token.totalSupply()));
 
-        // mint initial account balance
-        token.mint(account, amount);
-        uint256 initialBalance = token.balanceOf(account);
-        uint256 initialTotalSupply = token.totalSupply();
+        MockERC20 mockToken = new MockERC20("Token", "TKN");
+        mockToken.mint(account, amount);
 
-        // burn half of the minted tokens
-        token.burn(account, amount/2);
-        assertEq(token.balanceOf(account), (initialBalance - amount/2));
-        assertEq(token.totalSupply(), (initialTotalSupply - amount/2));
+        // burn all of the minted tokens
+        mockToken.burn(account, amount);
+        assertEq(mockToken.balanceOf(account), 0);
+        assertEq(mockToken.totalSupply(),0);
     }
 
     /* ------------- transfer() ------------- */
@@ -163,6 +155,22 @@ contract MockERC20Test is Test {
         token.transfer(address(alice), 1_000e18);
         vm.prank(alice);
         token.approve(address(bob), 1_600e18);
+    }
+
+    /* ---- allowance increase/decrease ---- */
+
+    function testIncreaseAllowance() public{
+        assertTrue(token.approve(alice, 500));
+        assertEq(token.allowance(address(this), alice),500);
+        assertTrue(token.increaseAllowance(alice, 100));
+        assertEq(token.allowance(address(this), alice),600);
+    }
+
+    function testDecreaseAllowance() public{
+        assertTrue(token.approve(alice, 500));
+        assertEq(token.allowance(address(this), alice), 500);
+        assertTrue(token.decreaseAllowance(alice, 100));
+        assertEq(token.allowance(address(this), alice),400);
     }
 
     /* ----------- transferFrom() --------- */

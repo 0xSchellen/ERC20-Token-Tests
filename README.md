@@ -8,7 +8,8 @@ https://github.com/guilhermeboaventurarodrigues
 Its based on the tests presented in the excellent github repos below:
 
 solmate      - https://github.com/Rari-Capital/solmate
-openzeppelin -https://github.com/OpenZeppelin/openzeppelin-contracts
+
+openzeppelin - https://github.com/OpenZeppelin/openzeppelin-contracts
 
 0xPhaze      - https://github.com/0xPhaze/ERC721M
 

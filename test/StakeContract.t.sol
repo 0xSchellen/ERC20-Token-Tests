@@ -13,10 +13,12 @@ contract StakeContractTest is Test {
     function setUp() public {
         stakeContract = new StakeContract();
         myToken = new MockERC20("Token", "TKN");
+        myToken.mint(address(this),  1_000_000e18);
     }
 
     function test_staking_tokens_fuzz(uint256 amount) public {
         vm.assume(amount <= myToken.totalSupply());
+        vm.assume(amount != 0);
         myToken.approve(address(stakeContract), amount);
         bool stakePassed = stakeContract.stake(amount, address(myToken));
         assertTrue(stakePassed);
