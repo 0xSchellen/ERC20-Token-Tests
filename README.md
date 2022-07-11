@@ -7,6 +7,8 @@ https://github.com/guilhermeboaventurarodrigues
 
 Its based on the tests presented in the excellent github repos below:
 
+Foundry book - https://book.getfoundry.sh/tutorials/testing-eip712.html
+
 solmate      - https://github.com/Rari-Capital/solmate
 
 openzeppelin - https://github.com/OpenZeppelin/openzeppelin-contracts
