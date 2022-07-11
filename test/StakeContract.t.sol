@@ -4,15 +4,15 @@ pragma solidity 0.8.15;
 import {stdStorage, StdStorage, Test} from "forge-std/Test.sol";
 import {Vm} from "forge-std/Vm.sol";
 import {StakeContract} from "../src/StakeContract.sol";
-import {MyToken} from  "../src/MyToken.sol";
+import {MockERC20} from  "../src/MockERC20.sol";
 
 contract StakeContractTest is Test {
     StakeContract public stakeContract;
-    MyToken public myToken; 
+    MockERC20 public myToken; 
 
     function setUp() public {
         stakeContract = new StakeContract();
-        myToken = new MyToken("Token", "TKN");
+        myToken = new MockERC20("Token", "TKN");
     }
 
     function test_staking_tokens_fuzz(uint256 amount) public {
